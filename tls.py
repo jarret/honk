@@ -2,10 +2,15 @@
 
 import os
 import sys
+import logging
+import inspect
 import argparse
+import txaio
 
 from twisted.internet import reactor, ssl
 from twisted.python import log
+
+from twisted.logger import Logger, LogLevel
 
 from autobahn.twisted.websocket import WebSocketServerFactory
 from autobahn.twisted.websocket import WebSocketServerProtocol
@@ -28,8 +33,10 @@ class TlsHonkServerProtocol(WebSocketServerProtocol):
 
 
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
+    txaio.start_logging(level='debug')
+    log.startLogging(sys.stdout)
     parser = argparse.ArgumentParser(prog="clear.py")
     parser.add_argument('-p', "--port", type=int, default=443,
                         help="port to listen on (default=443)")
@@ -37,7 +44,6 @@ if __name__ == '__main__':
                         help="directory w/ cert.key and cert.pem (default=cert/)")
     s = parser.parse_args()
 
-    log.startLogging(sys.stdout)
     cert_key = os.path.join(s.cert_dir, "cert.key")
     cert_pem = os.path.join(s.cert_dir, "cert.pem")
     contextFactory = ssl.DefaultOpenSSLContextFactory(cert_key, cert_pem)
