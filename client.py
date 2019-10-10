@@ -24,7 +24,7 @@ class TlsHonkClientProtocol(WebSocketClientProtocol):
             print("Text message received: {}".format(payload.decode('utf8')))
         reactor.callLater(1, self.sendHello)
 
-HONK_WSS = "wss://localhost:4443"
+HONK_WSS = "wss://localhost:4443/howdy"
 #HONK_WSS = "wss://ws.rarepepemuseum.com:443"
 
 if __name__ == '__main__':
