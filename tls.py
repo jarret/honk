@@ -42,6 +42,7 @@ if __name__ == '__main__':
     cert_pem = os.path.join(s.cert_dir, "cert.pem")
     contextFactory = ssl.DefaultOpenSSLContextFactory(cert_key, cert_pem)
     factory = WebSocketServerFactory(u"wss://127.0.0.1:%s" % s.port)
+    factory.setProtocolOptions(trustXForwardedFor=1)
     factory.protocol = TlsHonkServerProtocol
 
     listenWS(factory, contextFactory)
