@@ -62,7 +62,7 @@ if __name__ == '__main__':
     ctx.use_certificate_chain_file(fullchain_pem)
 
     factory = WebSocketServerFactory(u"wss://127.0.0.1:%s" % s.port)
-    factory.setProtocolOptions(trustXForwardedFor=1)
+    factory.setProtocolOptions(autoPingInterval=30, autoPingTimeout=5)
     factory.protocol = TlsHonkServerProtocol
 
     listenWS(factory, contextFactory)
