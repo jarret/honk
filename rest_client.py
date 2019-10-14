@@ -3,7 +3,7 @@
 from requests import get
 
 HOST = "localhost"
-PORT = 8080
+PORT = 8000
 
 if __name__ == '__main__':
 

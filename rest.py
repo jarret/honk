@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+import os
+import subprocess
+
 from flask import Flask, make_response
 from flask_restful import Resource, Api, reqparse
 from flask_cors import CORS
@@ -68,16 +71,39 @@ class Honk(Resource):
         if err:
             return {'err': err}, http_status("Bad Request")
 
+        print("got: %s" % args.honk)
         return {'honk': args.honk}, http_status("OK")
 
 ###############################################################################
 
 REST_RESOURCES = [Honk]
 
+app = Flask("honk")
+CORS(app)
+api = Api(app)
+for r in REST_RESOURCES:
+    api.add_resource(r, r.PATH)
+
+#WORKERS = 2
+#CA_CERTS = "/home/ubuntu/cert/fullchain.pem"
+#CERTFILE = "/home/ubuntu/cert/cert.pem"
+#KEYFILE = "/home/ubuntu/cert/cert.key"
+#BIND = "127.0.0.1:443"
+
+WORKERS = 2
+CA_CERTS = "cert/fullchain.pem"
+CERTFILE = "cert/cert.pem"
+KEYFILE = "cert/cert.key"
+BIND = "127.0.0.1:8000"
+
+
 if __name__ == '__main__':
-    app = Flask("honk")
-    CORS(app)
-    api = Api(app)
-    for r in REST_RESOURCES:
-        api.add_resource(r, r.PATH)
-    app.run(debug=True, use_reloader=False, port=8080, host="0.0.0.0")
+
+    #cmd = ("gunicorn --workers=%d --ca-certs %s --certfile %s --keyfile %s "
+    #       " --bind %s rest:app" % (WORKERS, CA_CERTS, CERTFILE, KEYFILE,
+    #                                BIND))
+    cmd = ("gunicorn --workers=%d --bind %s rest:app" % (WORKERS, BIND))
+    print(cmd)
+    os.system(cmd)
+
+
